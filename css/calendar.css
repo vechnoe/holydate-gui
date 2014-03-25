@@ -1,0 +1,40 @@
+body {
+    font-family: 'PT Serif Custom';
+    font-size: 9.4pt;
+    background: #fcffe4;
+    margin-left: 0.3em;;
+    margin-right: 0.3em;
+}
+
+.weekdayname {
+     font-family: 'PT Serif Caption';
+}
+
+span.red {
+    color: #fe0100;
+}
+
+span.bold {
+    font-family: 'PT Serif';
+    font-weight: bold;
+}
+
+span.twelve {
+    color: #fe0100;
+    font-family: 'PT Serif Custom';
+}
+
+span.polyeleos {
+    color: #fe0100;
+    font-family: 'PT Serif Custom';
+}
+
+span.glorium {
+    color: #fe0100;
+    font-family: 'PT Serif Custom';
+}
+
+span.six {
+    color: black;
+    font-family: 'PT Serif Custom';
+}
