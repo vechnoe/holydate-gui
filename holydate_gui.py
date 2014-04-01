@@ -18,8 +18,12 @@ from qjuliancalendarwidget import QJulianCalendarWidget
 from holydate import AncientCalendar
 from holydate import menology, holydate_func, search_saints
 
-LOGO = 'images/exit.png'
-LOGO_SVG = 'images/system-log-out.svg'
+LOGO = 'images/holydate-logo.png'
+LOGO_SVG = 'images/holydate-logo.svg'
+RED = 'brown'
+GREY = 'grey'
+BLACK = 'black'
+WHITE = 'white'
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -116,10 +120,14 @@ class MainWidget(QtGui.QWidget):
 
         self.gregorianDateEditForm = QtGui.QDateEdit()
         self.gregorianDateEditForm.setDisplayFormat(QtCore.QString('dd MMMM yyyy'))
+        self.gregorianDateEditForm.setMinimumDate(QtCore.QDate(1900, 1, 1))
+        self.gregorianDateEditForm.setMaximumDate(QtCore.QDate(2099, 12, 31))
         self.gregorianDateEditForm.setDate(QtCore.QDate.currentDate())
 
         self.julianDateEditForm = QtGui.QDateEdit()
         self.julianDateEditForm.setDisplayFormat(QtCore.QString('dd MMMM yyyy'))
+        self.julianDateEditForm.setMinimumDate(QtCore.QDate(1900, 1, 1))
+        self.julianDateEditForm.setMaximumDate(QtCore.QDate(2099, 12, 31))
         self.julianDateEditForm.setDate(QtCore.QDate.currentDate())
 
         self.textWidget = QtGui.QTextBrowser()
@@ -243,63 +251,67 @@ class MainWidget(QtGui.QWidget):
         """Colorize cells of Gregorian Calendar widget."""
 
         year = self.gregorianCalendarWidget.yearShown()
-        month = self.gregorianCalendarWidget.monthShown()
-        days_in_month = calendar.monthrange(year, month)[1] + 1
 
         f = QtGui.QTextCharFormat()
         fast_and_feast = {}
 
-        for day in range(1, days_in_month):
-            cal = HolydateGui(day, month, year, calendar='gregorian')
-            fast_and_feast.update({day: cal.getFeastAndFastStatus()})
+        for month in range(1, 13):
+            days_in_month = calendar.monthrange(year, month)[1] + 1
+            for day in range(1, days_in_month):
+                cal = HolydateGui(day, month, year, calendar='gregorian')
+                fast_and_feast.setdefault(month, {}).update({day: cal.getFeastAndFastStatus()})
 
         try:
-            for day in range(1, days_in_month):
-                if fast_and_feast[day] is 3:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('red')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('grey')))
-                elif fast_and_feast[day] is 2:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('white')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('grey')))
-                elif fast_and_feast[day] is 1:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('red')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('white')))
-                elif fast_and_feast[day] is 0:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('black')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('white')))
-                self.gregorianCalendarWidget.setDateTextFormat(QtCore.QDate(year, month, day), f)
+            for month in range(1, 13):
+                days_in_month = calendar.monthrange(year, month)[1] + 1
+                for day in range(1, days_in_month):
+                    if fast_and_feast[month][day] is 3:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(RED)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(GREY)))
+                    elif fast_and_feast[month][day] is 2:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(WHITE)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(GREY)))
+                    elif fast_and_feast[month][day] is 1:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(RED)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(WHITE)))
+                    elif fast_and_feast[month][day] is 0:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(BLACK)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(WHITE)))
+                    self.gregorianCalendarWidget.setDateTextFormat(QtCore.QDate(year, month, day), f)
         except KeyError:
             pass
 
     def setJulianBrushedCell(self):
         """Colorize cells of Julian Calendar widget."""
 
-        year = self.julianCalendarWidget.yearShown()
-        month = self.julianCalendarWidget.monthShown()
-        days_in_month = calendar.monthrange(year, month)[1] + 1
+        year = self.gregorianCalendarWidget.yearShown()
 
         f = QtGui.QTextCharFormat()
         fast_and_feast = {}
 
-        for day in range(1, days_in_month):
-            cal = HolydateGui(day, month, year, calendar='julian')
-            fast_and_feast.update({day: cal.getFeastAndFastStatus()})
+        for month in range(1, 13):
+            days_in_month = calendar.monthrange(year, month)[1] + 1
+            for day in range(1, days_in_month):
+                cal = HolydateGui(day, month, year, calendar='julian')
+                fast_and_feast.setdefault(month, {}).update({day: cal.getFeastAndFastStatus()})
 
         try:
-            for day in range(1, days_in_month):
-                if fast_and_feast[day] is 3:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('red')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('grey')))
-                elif fast_and_feast[day] is 2:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('white')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('grey')))
-                elif fast_and_feast[day] is 1:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('red')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('white')))
-                elif fast_and_feast[day] is 0:
-                    f.setForeground(QtGui.QBrush(QtGui.QColor('black')))
-                    f.setBackground(QtGui.QBrush(QtGui.QColor('white')))
-                self.julianCalendarWidget.setDateTextFormat(QtCore.QDate(year, month, day), f)
+            for month in range(1, 13):
+                days_in_month = calendar.monthrange(year, month)[1] + 1
+                for day in range(1, days_in_month):
+                    if fast_and_feast[month][day] is 3:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(RED)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(GREY)))
+                    elif fast_and_feast[month][day] is 2:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(WHITE)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(GREY)))
+                    elif fast_and_feast[month][day] is 1:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(RED)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(WHITE)))
+                    elif fast_and_feast[month][day] is 0:
+                        f.setForeground(QtGui.QBrush(QtGui.QColor(BLACK)))
+                        f.setBackground(QtGui.QBrush(QtGui.QColor(WHITE)))
+                    self.julianCalendarWidget.setDateTextFormat(QtCore.QDate(year, month, day), f)
         except KeyError:
             pass
 
