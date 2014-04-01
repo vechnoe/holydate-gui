@@ -169,6 +169,9 @@ class MainWidget(QtGui.QWidget):
         #Change date between widgets.
         self.gregorianCalendarWidget.selectionChanged.connect(self.setSelectedDateJulian)
         self.julianCalendarWidget.selectionChanged.connect(self.setSelectedDateGregorian)
+        #Change current page between widget.
+        self.gregorianCalendarWidget.currentPageChanged.connect(self.changeGregorianCurrentPage)
+        self.gregorianCalendarWidget.currentPageChanged.connect(self.changeJulianCurrentPage)
         #Radio button of old and new style date.
         self.rbOldStyle.clicked.connect(self.setJulianCalendar)
         self.rbNewStyle.clicked.connect(self.setGregorianCalendar)
@@ -199,6 +202,17 @@ class MainWidget(QtGui.QWidget):
         self.stackedBox.setCurrentWidget(self.julianCalendarWidget)
         self.stackedBoxEditForm.setCurrentWidget(self.julianDateEditForm)
         self.julianDateEditForm.setDate(self.julianCalendarWidget.selectedDate())
+
+    def changeGregorianCurrentPage(self):
+        year = self.gregorianCalendarWidget.yearShown()
+        month = self.gregorianCalendarWidget.monthShown()
+        self.julianCalendarWidget.setCurrentPage(year, month)
+
+    def changeJulianCurrentPage(self):
+        year = self.julianCalendarWidget.yearShown()
+        month = self.julianCalendarWidget.monthShown()
+        self.gregorianCalendarWidget.setCurrentPage(year, month)
+
 
     def setSelectedDateJulian(self):
         date_new = self.gregorianCalendarWidget.selectedDate()
@@ -284,7 +298,7 @@ class MainWidget(QtGui.QWidget):
     def setJulianBrushedCell(self):
         """Colorize cells of Julian Calendar widget."""
 
-        year = self.gregorianCalendarWidget.yearShown()
+        year = self.julianCalendarWidget.yearShown()
 
         f = QtGui.QTextCharFormat()
         fast_and_feast = {}
