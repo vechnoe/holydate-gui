@@ -41,3 +41,9 @@ License
 Copyright 2013-2014 Maxim Chernyatevich (http://www.vechnoe.info)
 
 `GNU General Public License v3 or later <http://www.gnu.org/licenses/>`_
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/vechnoe/holydate-gui/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
