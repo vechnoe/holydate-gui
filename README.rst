@@ -31,6 +31,9 @@ Dependencies
 
 * `Holydate <https://pypi.python.org/pypi/holydate/>`_
 
+*Required*
+
+* `QDarkStyleSheet <https://github.com/ColinDuquesnoy/QDarkStyleSheet/>`_
 
 License
 =======
