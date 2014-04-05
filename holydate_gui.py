@@ -17,6 +17,9 @@ from PyQt4 import QtCore, QtGui
 from qjuliancalendarwidget import QJulianCalendarWidget
 from holydate import AncientCalendar
 from holydate import menology, holydate_func, search_saints
+import qdarkstyle
+
+sys.setrecursionlimit(18)  # Dirty hack. Fixme in future.
 
 LOGO = 'images/holydate-logo.png'
 LOGO_SVG = 'images/holydate-logo.svg'
@@ -31,7 +34,7 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
 
-        self.setWindowTitle(QtCore.QString(u'Древлеправославный календарь'))
+        self.setWindowTitle(QtCore.QString(u'Древлеправославный календарь 0.1a1'))
         self.setWindowIcon(QtGui.QIcon(LOGO_SVG))
         self.resize(900, 600)
         self.Widget = MainWidget(self)
@@ -39,6 +42,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.createActions()
         self.createMenus()
+        self.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
 
         self.statusBar()
 
@@ -171,7 +175,7 @@ class MainWidget(QtGui.QWidget):
         self.julianCalendarWidget.selectionChanged.connect(self.setSelectedDateGregorian)
         #Change current page between widget.
         self.gregorianCalendarWidget.currentPageChanged.connect(self.changeGregorianCurrentPage)
-        self.gregorianCalendarWidget.currentPageChanged.connect(self.changeJulianCurrentPage)
+        self.julianCalendarWidget.currentPageChanged.connect(self.changeJulianCurrentPage)
         #Radio button of old and new style date.
         self.rbOldStyle.clicked.connect(self.setJulianCalendar)
         self.rbNewStyle.clicked.connect(self.setGregorianCalendar)
@@ -204,15 +208,20 @@ class MainWidget(QtGui.QWidget):
         self.julianDateEditForm.setDate(self.julianCalendarWidget.selectedDate())
 
     def changeGregorianCurrentPage(self):
-        year = self.gregorianCalendarWidget.yearShown()
-        month = self.gregorianCalendarWidget.monthShown()
-        self.julianCalendarWidget.setCurrentPage(year, month)
+        try:
+            year = self.gregorianCalendarWidget.yearShown()
+            month = self.gregorianCalendarWidget.monthShown()
+            self.julianCalendarWidget.setCurrentPage(year, month)
+        except RuntimeError:
+            pass
 
     def changeJulianCurrentPage(self):
-        year = self.julianCalendarWidget.yearShown()
-        month = self.julianCalendarWidget.monthShown()
-        self.gregorianCalendarWidget.setCurrentPage(year, month)
-
+        try:
+            year = self.julianCalendarWidget.yearShown()
+            month = self.julianCalendarWidget.monthShown()
+            self.gregorianCalendarWidget.setCurrentPage(year, month)
+        except RuntimeError:
+            pass
 
     def setSelectedDateJulian(self):
         date_new = self.gregorianCalendarWidget.selectedDate()
@@ -520,6 +529,8 @@ class HolydateGui(AncientCalendar):
 class AboutDialog(QtGui.QMessageBox):
     def __init__(self):
         QtGui.QMessageBox.__init__(self)
+
+        self.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
 
         text = u"""
             <h3>holydate-gui</h3>
