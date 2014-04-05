@@ -23,10 +23,10 @@ sys.setrecursionlimit(18)  # Dirty hack. Fixme in future.
 
 LOGO = 'images/holydate-logo.png'
 LOGO_SVG = 'images/holydate-logo.svg'
-RED = 'brown'
-GREY = 'grey'
+RED = '#fe0100'
+GREY = '#666666'
 BLACK = 'black'
-WHITE = 'white'
+WHITE = '#F5F5F5'
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -173,9 +173,9 @@ class MainWidget(QtGui.QWidget):
         #Change date between widgets.
         self.gregorianCalendarWidget.selectionChanged.connect(self.setSelectedDateJulian)
         self.julianCalendarWidget.selectionChanged.connect(self.setSelectedDateGregorian)
-        #Change current page between widget.
-        self.gregorianCalendarWidget.currentPageChanged.connect(self.changeGregorianCurrentPage)
-        self.julianCalendarWidget.currentPageChanged.connect(self.changeJulianCurrentPage)
+        #Change current page between widget.  #  Fixme: this slots called undesirable recursion.
+        self.gregorianCalendarWidget.currentPageChanged.connect(self.changeJulianCurrentPage)
+        self.julianCalendarWidget.currentPageChanged.connect(self.changeGregorianCurrentPage)
         #Radio button of old and new style date.
         self.rbOldStyle.clicked.connect(self.setJulianCalendar)
         self.rbNewStyle.clicked.connect(self.setGregorianCalendar)
@@ -207,21 +207,15 @@ class MainWidget(QtGui.QWidget):
         self.stackedBoxEditForm.setCurrentWidget(self.julianDateEditForm)
         self.julianDateEditForm.setDate(self.julianCalendarWidget.selectedDate())
 
-    def changeGregorianCurrentPage(self):
-        try:
-            year = self.gregorianCalendarWidget.yearShown()
-            month = self.gregorianCalendarWidget.monthShown()
-            self.julianCalendarWidget.setCurrentPage(year, month)
-        except RuntimeError:
-            pass
-
     def changeJulianCurrentPage(self):
-        try:
-            year = self.julianCalendarWidget.yearShown()
-            month = self.julianCalendarWidget.monthShown()
-            self.gregorianCalendarWidget.setCurrentPage(year, month)
-        except RuntimeError:
-            pass
+        year = self.gregorianCalendarWidget.yearShown()
+        month = self.gregorianCalendarWidget.monthShown()
+        self.julianCalendarWidget.setCurrentPage(year, month)
+
+    def changeGregorianCurrentPage(self):
+        year = self.julianCalendarWidget.yearShown()
+        month = self.julianCalendarWidget.monthShown()
+        self.gregorianCalendarWidget.setCurrentPage(year, month)
 
     def setSelectedDateJulian(self):
         date_new = self.gregorianCalendarWidget.selectedDate()
