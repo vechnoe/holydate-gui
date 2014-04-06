@@ -4,6 +4,11 @@
 holydate-gui
 ============
 
+.. image:: https://d2weczhvl823v0.cloudfront.net/vechnoe/holydate-gui/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+ 
+
 Description
 ===========
 The package Holydate-Gui represent
