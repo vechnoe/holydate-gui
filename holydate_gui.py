@@ -6,11 +6,12 @@ The module Holydate-Gui represent
 GUI interface for Holydate -- oldbeliever
 ancient orthodox calendar.
 
-:copyright: 2014 by Maxim Chernytevich.
+:copyright: 2014 by Maxim Chernyatevich.
 :license: GPLv3, see LICENSE for more details.
 
 """
 
+import os
 import sys
 import calendar
 from PyQt4 import QtCore, QtGui
@@ -21,8 +22,9 @@ import qdarkstyle
 
 sys.setrecursionlimit(18)  # Dirty hack. Fixme in future.
 
-LOGO = 'images/holydate-logo.png'
-LOGO_SVG = 'images/holydate-logo.svg'
+DIR = os.path.dirname(__file__)
+LOGO = os.path.join(DIR, 'images/holydate-logo.png')
+LOGO_SVG = os.path.join(DIR, 'images/holydate-logo.svg')
 RED = '#fe0100'
 GREY = '#666666'
 BLACK = 'black'
@@ -112,6 +114,7 @@ class MainWidget(QtGui.QWidget):
         self.setGregorianBrushedCell()
         self.setJulianBrushedCell()
 
+        #Fixme: shorcats on russian do not work.
         self.rbNewStyle = QtGui.QRadioButton(QtCore.QString(u'По но&вому стилю'))
         self.rbNewStyle.setChecked(True)
         self.rbOldStyle = QtGui.QRadioButton(QtCore.QString(u'По ста&рому стилю'))
@@ -136,9 +139,9 @@ class MainWidget(QtGui.QWidget):
 
         self.textWidget = QtGui.QTextBrowser()
         # Embed custom fonts.
-        pt_serif_custom = QtGui.QFontDatabase.addApplicationFont(QtCore.QString('fonts/PTSerif-Custom.ttf'))
-        pt_serif_caption = QtGui.QFontDatabase.addApplicationFont(QtCore.QString('fonts/PTZ55F.ttf'))
-        pt_serif_bold = QtGui.QFontDatabase.addApplicationFont(QtCore.QString('fonts/PTF75F.ttf'))
+        pt_serif_custom = QtGui.QFontDatabase.addApplicationFont(os.path.join(DIR, 'fonts/PTSerif-Custom.ttf'))
+        pt_serif_caption = QtGui.QFontDatabase.addApplicationFont(os.path.join(DIR, 'fonts/PTZ55F.ttf'))
+        pt_serif_bold = QtGui.QFontDatabase.addApplicationFont(os.path.join(DIR, 'fonts/PTF75F.ttf'))
         self.textWidget.setFont(QtGui.QFont(pt_serif_custom))
         self.textWidget.setFont(QtGui.QFont(pt_serif_caption))
         self.textWidget.setFont(QtGui.QFont(pt_serif_bold))
@@ -357,10 +360,12 @@ class MainWidget(QtGui.QWidget):
         fast = calendar.getFast()
         bows = calendar.getBow()
 
+        css = os.path.join(DIR, 'css/calendar.css')
+
         out = """
               <html>
                   <head>
-                     <link rel="stylesheet" media="all" type="text/css" href="css/calendar.css" />
+                     <link rel="stylesheet" media="all" type="text/css" href="{css}" />
                   </head>
                 <body>
                   <div>
@@ -391,7 +396,8 @@ class MainWidget(QtGui.QWidget):
               </html>
               """
 
-        out = out.format(gr_date=gr_date,
+        out = out.format(css=css,
+                         gr_date=gr_date,
                          ju_date=ju_date,
                          weekdayname=weekdayname,
                          weekday=weekday,
@@ -428,6 +434,7 @@ class MainWidget(QtGui.QWidget):
         text = self.searchForm.text()
         text = str(text.toUtf8())
         result = search_saints.search_saints(text, mode='html')
+        css = os.path.join(DIR, u'css/calendar.css')
 
         result = QtCore.QString(result.format(red=u"<span class='red'>",
                                               bold=u"<span class='bold'>",
@@ -437,10 +444,13 @@ class MainWidget(QtGui.QWidget):
                                               gl=u"<span class='glorium'>Ӵ</span>",
                                               sx=u"<span class='six'>Ӵ</span>",
                                               redgui=u''))
+
+
+
         out = u"""
               <html>
                   <head>
-                     <link rel="stylesheet" media="all" type="text/css" href="css/calendar.css" />
+                     <link rel="stylesheet" media="all" type="text/css" href='{css}' />
                   </head>
                 <body>
                   {result}
@@ -448,9 +458,8 @@ class MainWidget(QtGui.QWidget):
               </html>
               """
 
-        out = out.format(result=result)
+        out = out.format(result=result, css=css)
         self.textWidget.setText(QtCore.QString(out))
-
 
 class GregorianCalendarWidget(QtGui.QCalendarWidget):
     def __init__(self, parent=None):
