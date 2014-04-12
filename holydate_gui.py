@@ -440,6 +440,7 @@ class MainWidget(QtGui.QWidget):
 
     def clearSearchForm(self):
         self.searchForm.clear()
+        self.output()
 
     def searchFormEnter(self):
         text = self.searchForm.text()
