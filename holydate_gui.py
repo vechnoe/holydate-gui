@@ -22,7 +22,7 @@ import qdarkstyle
 
 sys.setrecursionlimit(18)  # Dirty hack. Fixme in future.
 
-DIR = os.path.dirname(__file__)
+DIR = os.getcwd()
 LOGO = os.path.join(DIR, 'images/holydate-logo.png')
 LOGO_SVG = os.path.join(DIR, 'images/holydate-logo.svg')
 RED = '#fe0100'
@@ -38,7 +38,11 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setWindowTitle(QtCore.QString(u'Древлеправославный календарь 0.1a1'))
         self.setWindowIcon(QtGui.QIcon(LOGO_SVG))
-        self.resize(900, 600)
+        #windowWidh = 900
+        #windowHeight = 600
+        #print screen.height(), screen.width()
+
+        self.setMinimumSize(900, 600)
         self.Widget = MainWidget(self)
         self.setCentralWidget(self.Widget)
 
@@ -146,10 +150,13 @@ class MainWidget(QtGui.QWidget):
         self.textWidget.setFont(QtGui.QFont(pt_serif_caption))
         self.textWidget.setFont(QtGui.QFont(pt_serif_bold))
         self.textWidget.setHtml(self.default_output())
+        self.textWidget.setStyleSheet('font-size: 18px;')
 
-        self.searchForm = QtGui.QLineEdit()
+        self.searchForm = SearchForm()
+        self.searchForm.setFixedHeight(height)
         self.searchForm.setTextMargins(5, 0, 0, 2)
         self.buttonSearch = QtGui.QPushButton(QtCore.QString(u'&Найти'))
+        self.buttonSearch.setFixedHeight(height)
 
         vboxLeft.addLayout(self.stackedBox)
         self.stackedBox.addWidget(self.gregorianCalendarWidget)
@@ -197,6 +204,7 @@ class MainWidget(QtGui.QWidget):
         #Search form.
         self.buttonSearch.clicked.connect(self.searchFormEnter)
         self.searchForm.returnPressed.connect(self.searchFormEnter)
+        self.searchForm.button.clicked.connect(self.clearSearchForm)
 
     def setGregorianCalendar(self):
         self.calendar_system = 'gregorian'
@@ -430,6 +438,9 @@ class MainWidget(QtGui.QWidget):
         calendar = self.calendar_constructor(day, month, year)
         return calendar
 
+    def clearSearchForm(self):
+        self.searchForm.clear()
+
     def searchFormEnter(self):
         text = self.searchForm.text()
         text = str(text.toUtf8())
@@ -479,6 +490,30 @@ class JulianCalendarWidget(QJulianCalendarWidget):
         self.setGridVisible(False)
         self.setFirstDayOfWeek(QtCore.Qt.Monday)
         self.setVerticalHeaderFormat(0)
+
+
+class SearchForm(QtGui.QLineEdit):
+    def __init__(self):
+        QtGui.QLineEdit.__init__(self)
+
+        self.button = QtGui.QToolButton(self)
+        self.button.setIcon(QtGui.QIcon(os.path.join(DIR, 'images/close.png')))
+        self.button.setStyleSheet('border: 0px; padding: 0px;')
+        self.button.setCursor(QtCore.Qt.ArrowCursor)
+
+        frameWidth = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
+        buttonSize = self.button.sizeHint()
+
+        self.setStyleSheet('QLineEdit {padding-right: %dpx; }' % (buttonSize.width() + frameWidth + 1))
+        self.setMinimumSize(max(self.minimumSizeHint().width(), buttonSize.width() + frameWidth*2 + 2),
+                            max(self.minimumSizeHint().height(), buttonSize.height() + frameWidth*2 + 2))
+
+    def resizeEvent(self, event):
+        buttonSize = self.button.sizeHint()
+        frameWidth = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
+        self.button.move(self.rect().right() - frameWidth - buttonSize.width(),
+                         (self.rect().bottom() - buttonSize.height() + 1)/2)
+        super(SearchForm, self).resizeEvent(event)
 
 
 class HolydateGui(AncientCalendar):
