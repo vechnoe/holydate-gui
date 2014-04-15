@@ -38,9 +38,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setWindowTitle(QtCore.QString(u'Древлеправославный календарь 0.1a1'))
         self.setWindowIcon(QtGui.QIcon(LOGO_SVG))
-        #windowWidh = 900
-        #windowHeight = 600
-        #print screen.height(), screen.width()
 
         self.setMinimumSize(900, 600)
         self.Widget = MainWidget(self)
@@ -456,8 +453,6 @@ class MainWidget(QtGui.QWidget):
                                               gl=u"<span class='glorium'>Ӵ</span>",
                                               sx=u"<span class='six'>Ӵ</span>",
                                               redgui=u''))
-
-
 
         out = u"""
               <html>
