@@ -34,7 +34,7 @@ Then:
 
 ::
 
-    apt-key adv --recv-keys --keyserver pgp.mit.edu 277D1DEF
+    apt-key adv --recv-keys --keyserver pgp.mit.edu 270904ED
     aptitude update
     aptitude install holydate-gui
 
