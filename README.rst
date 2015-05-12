@@ -11,17 +11,20 @@ holydate-gui
 
 Description
 ===========
-The package Holydate-Gui represent
-GUI interface for Holydate. The ancient Orthodox calendar for
-oldbelievers (better known as starovery or staroobryadts).
-Containts name of weekday, julian and gregorian
-dates, daily fasts and bows. Holydate contains search saints
-and feasts in menology too.
+The package **holydate-gui** represent
+GUI interface for Holydate. This package represents the
+ancient Orthodox calendar for Oldbelievers (better known as
+Starovery or Staroobryadts). Evaluates daily feasts,
+and Gregorian dates, fasts and bows.
+Contains an engine for searching Saints and feasts in the Menology,
+the Visual Paschalion.
+
+.. image:: ./images/holydate-gui-screenshort.jpg
 
 Instalation
 ===========
 
-From repository:
+From repository (temporarily not available):
 
 Add your /etc/apt/sources.list :
 
